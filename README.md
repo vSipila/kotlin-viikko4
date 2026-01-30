@@ -1,15 +1,27 @@
-data model: `Task` data class jossa id, title, description, priority, dueDate, properties
+ mvvm-arkkitehtuuri
 
-mockData: lista 5-10 samplea testejä varten
-homeScreen: perus ui joka näyttää tasklistin
+Model: Task-data-luokka (id, title, description, priority, dueDate)
 
-addTask()- uusi taski listan loppuun
-2. toggleDone - toggle taskkin tehdyksi tai toisinpäin (true ↔ false)
-3. filterByDone()- filter onko taski tehty vai ei
-4. sortByDueDate - Sortaa taskit aikajärjestykseen
+ViewModel: Käyttää StateFlow/ViewModelState<List<Task>> tilan hallintaan
 
-Kieli: kotlin
-Framework: Jetpack Compose
-Min SDK API 24 (androind 7.0)
+View: Jetpack Compose -käyttöliittymä
 
--Valtteri Siplä
+mvvm malli on hyvä koska se erottaa ui:n ja logiigan sekä helpottaa testattavuutta.
+
+stateflow pitää tilaa tilaa "stateflow" jos ui:n tulee muutoksia niin se päivittyy automaattisesti.
+
+reaktiiviset toiminnot:
+
+addTask() - Lisää uusi tehtävä
+
+toggleDone() - Merkitse tehtävä tehdyksi/kesken
+
+removeTask() - Poista tehtävä
+
+updateTask() - Päivitä tehtävän tiedot
+
+käyttöliittymä:
+
+HomeScreen - Näyttää tehtävälistan
+
+DetailScreen - Dialogi tehtävän muokkaamiseen ja poistamiseen
