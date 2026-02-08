@@ -1,73 +1,94 @@
-package com.example.h1
+package com.example.h1.viewmodel
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-
-data class Task(
-    val id: Int,
-    var title: String,
-    var done: Boolean,
-    var dueDate: String
-)
+import com.example.h1.domain.model.Task
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class TaskViewModel : ViewModel() {
-    private val _tasks = mutableStateOf(listOf<Task>())
-    private val _originalTasks = mutableStateOf(listOf<Task>())
-    val tasks: State<List<Task>> = _tasks
+    private val _allTasks = MutableStateFlow<List<Task>>(emptyList())
+    private val _tasks = MutableStateFlow<List<Task>>(emptyList())
+    val tasks: StateFlow<List<Task>> = _tasks.asStateFlow()
+
+    private var nextId = 1
+    private var currentFilter: FilterType = FilterType.ALL
+    private var isSorted = false
 
     init {
-        val initialTasks = listOf(
-            Task(1, "Tee kotitehtavat", false, "2024-01-20"),
-            Task(2, "Kay kaupassa", false, "2024-01-22"),
-            Task(3, "Soita aidille", true, "2024-01-18")
+        _allTasks.value = listOf(
+            Task(nextId++, "Kaupassa käynti", "Maito, leipä, juusto", "2026-02-10", false),
+            Task(nextId++, "Kooditehtävä", "Viikon 4 tehtävä", "2026-02-09", false),
+            Task(nextId++, "Liikunta", "Sali 1h", "2026-02-08", true),
+            Task(nextId++, "Siivous", "Imurointi ja pyykit", "2026-02-11", false),
+            Task(nextId++, "Lukeminen", "Kirjan luku 5", "2026-02-08", true)
         )
-        _tasks.value = initialTasks
-        _originalTasks.value = initialTasks
+        applyFilter()
     }
 
-    fun addTask(task: Task) {
-        _tasks.value = _tasks.value + task
-        _originalTasks.value = _originalTasks.value + task
+    fun addTask(title: String, description: String, dueDate: String) {
+        val newTask = Task(
+            id = nextId++,
+            title = title,
+            description = description,
+            dueDate = dueDate,
+            isDone = false
+        )
+        _allTasks.value = _allTasks.value + newTask
+        applyFilter()
     }
 
-    fun toggleDone(id: Int) {
-        _tasks.value = _tasks.value.map { task ->
-            if (task.id == id) task.copy(done = !task.done) else task
+    fun toggleTaskDone(taskId: Int) {
+        _allTasks.value = _allTasks.value.map { task ->
+            if (task.id == taskId) task.copy(isDone = !task.isDone)
+            else task
         }
-        _originalTasks.value = _originalTasks.value.map { task ->
-            if (task.id == id) task.copy(done = !task.done) else task
-        }
+        applyFilter()
     }
 
-    fun removeTask(id: Int) {
-        _tasks.value = _tasks.value.filter { it.id != id }
-        _originalTasks.value = _originalTasks.value.filter { it.id != id }
+    fun updateTask(taskId: Int, title: String, description: String, dueDate: String) {
+        _allTasks.value = _allTasks.value.map { task ->
+            if (task.id == taskId) {
+                task.copy(
+                    title = title,
+                    description = description,
+                    dueDate = dueDate
+                )
+            } else task
+        }
+        applyFilter()
     }
 
-    fun updateTask(updatedTask: Task) {
-        _tasks.value = _tasks.value.map { task ->
-            if (task.id == updatedTask.id) updatedTask else task
-        }
-        _originalTasks.value = _originalTasks.value.map { task ->
-            if (task.id == updatedTask.id) updatedTask else task
-        }
+    fun removeTask(taskId: Int) {
+        _allTasks.value = _allTasks.value.filter { it.id != taskId }
+        applyFilter()
     }
 
-    fun filterByDone(done: Boolean) {
-        _tasks.value = if (done) {
-            _originalTasks.value.filter { it.done }
-        } else {
-            _originalTasks.value.filter { !it.done }
-        }
-    }
-
-    fun showAllTasks() {
-        _tasks.value = _originalTasks.value
+    fun filterByDone(filterType: FilterType) {
+        currentFilter = filterType
+        applyFilter()
     }
 
     fun sortByDueDate() {
-        _tasks.value = _tasks.value.sortedBy { it.dueDate }
-        _originalTasks.value = _originalTasks.value.sortedBy { it.dueDate }
+        isSorted = !isSorted
+        applyFilter()
     }
+
+    private fun applyFilter() {
+        var filtered = when (currentFilter) {
+            FilterType.ALL -> _allTasks.value
+            FilterType.DONE -> _allTasks.value.filter { it.isDone }
+            FilterType.NOT_DONE -> _allTasks.value.filter { !it.isDone }
+        }
+
+        if (isSorted) {
+            filtered = filtered.sortedBy { it.dueDate }
+        }
+
+        _tasks.value = filtered
+    }
+}
+
+enum class FilterType {
+    ALL, DONE, NOT_DONE
 }

@@ -1,8 +1,9 @@
-package com.example.h1.model
+package com.example.h1.domain.model
 
 data class Task(
     val id: Int,
-    var title: String,
-    var done: Boolean,
-    var dueDate: String
+    val title: String,
+    val description: String,
+    val dueDate: String,
+    val isDone: Boolean
 )
