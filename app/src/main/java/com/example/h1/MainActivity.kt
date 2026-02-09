@@ -20,6 +20,7 @@ class MainActivity : ComponentActivity() {
             var isDarkTheme by remember { mutableStateOf(false) }
 
             H1Theme(darkTheme = isDarkTheme) {
+
                 val navController = rememberNavController()
                 val viewModel: TaskViewModel = viewModel()
                 val tasks by viewModel.tasks.collectAsState()
@@ -29,33 +30,42 @@ class MainActivity : ComponentActivity() {
                     startDestination = ROUTE_HOME
                 ) {
                     composable(ROUTE_HOME) {
+
                         HomeScreen(
                             tasks = tasks,
                             onAddTask = { title, desc, date ->
                                 viewModel.addTask(title, desc, date)
                             },
+
                             onToggleTask = { taskId ->
                                 viewModel.toggleTaskDone(taskId)
                             },
+
                             onUpdateTask = { taskId, title, desc, date ->
                                 viewModel.updateTask(taskId, title, desc, date)
                             },
+
                             onRemoveTask = { taskId ->
                                 viewModel.removeTask(taskId)
                             },
+
                             onFilterChange = { filterType ->
                                 viewModel.filterByDone(filterType)
                             },
+
                             onSortByDate = {
                                 viewModel.sortByDueDate()
                             },
+
                             onNavigateToCalendar = {
                                 navController.navigate(ROUTE_CALENDAR)
                             },
+
                             onNavigateToSettings = {
                                 navController.navigate(ROUTE_SETTINGS)
                             }
                         )
+
                     }
 
                     composable(ROUTE_CALENDAR) {
@@ -70,9 +80,11 @@ class MainActivity : ComponentActivity() {
                             onRemoveTask = { taskId ->
                                 viewModel.removeTask(taskId)
                             },
+
                             onNavigateBack = {
                                 navController.popBackStack()
                             }
+
                         )
                     }
 

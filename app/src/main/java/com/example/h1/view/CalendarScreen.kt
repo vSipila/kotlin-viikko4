@@ -13,19 +13,23 @@ import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+
 fun CalendarScreen(
+
     tasks: List<com.example.h1.domain.model.Task>,
     onToggleTask: (Int) -> Unit,
     onUpdateTask: (Int, String, String, String) -> Unit,
     onRemoveTask: (Int) -> Unit,
     onNavigateBack: () -> Unit
 ) {
+
     var showEditDialog by remember { mutableStateOf(false) }
     var selectedTask by remember { mutableStateOf<com.example.h1.domain.model.Task?>(null) }
 
     val tasksByDate = tasks.groupBy { it.dueDate }.toSortedMap()
 
     Scaffold(
+
         topBar = {
             TopAppBar(
                 title = { Text("Kalenteri") },
@@ -33,6 +37,7 @@ fun CalendarScreen(
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.Default.ArrowBack, "Takaisin")
                     }
+
                 }
             )
         }
@@ -43,6 +48,7 @@ fun CalendarScreen(
                 .padding(padding)
                 .padding(16.dp)
         ) {
+
             tasksByDate.forEach { (date, tasksForDate) ->
                 item {
                     Text(
@@ -51,6 +57,7 @@ fun CalendarScreen(
                         modifier = Modifier.padding(vertical = 8.dp)
                     )
                 }
+
                 items(tasksForDate) { task ->
                     CalendarTaskItem(
                         task = task,
@@ -60,12 +67,14 @@ fun CalendarScreen(
                             showEditDialog = true
                         }
                     )
+
                 }
             }
         }
     }
 
     if (showEditDialog && selectedTask != null) {
+
         TaskDialog(
             title = "Muokkaa tehtävää",
             initialTitle = selectedTask!!.title,
@@ -80,36 +89,43 @@ fun CalendarScreen(
                 onRemoveTask(selectedTask!!.id)
                 showEditDialog = false
             }
+
         )
     }
 }
 
 @Composable
+
 fun CalendarTaskItem(
     task: com.example.h1.domain.model.Task,
     onToggle: () -> Unit,
     onEdit: () -> Unit
 ) {
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp)
             .clickable { onEdit() }
     ) {
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(12.dp)
         ) {
+
             Checkbox(
                 checked = task.isDone,
                 onCheckedChange = { onToggle() }
             )
+
             Column(
                 modifier = Modifier
                     .weight(1f)
                     .padding(start = 8.dp)
             ) {
+
                 Text(
                     text = task.title,
                     style = MaterialTheme.typography.bodyLarge

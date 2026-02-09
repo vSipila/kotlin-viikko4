@@ -18,6 +18,7 @@ import com.example.h1.viewmodel.FilterType
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
+
     tasks: List<com.example.h1.domain.model.Task>,
     onAddTask: (String, String, String) -> Unit,
     onToggleTask: (Int) -> Unit,
@@ -28,14 +29,19 @@ fun HomeScreen(
     onNavigateToCalendar: () -> Unit,
     onNavigateToSettings: () -> Unit
 ) {
+
     var showAddDialog by remember { mutableStateOf(false) }
+
     var showEditDialog by remember { mutableStateOf(false) }
+
     var selectedTask by remember { mutableStateOf<com.example.h1.domain.model.Task?>(null) }
+
     var currentFilter by remember { mutableStateOf(FilterType.ALL) }
 
     Scaffold(
         topBar = {
             TopAppBar(
+
                 title = { Text("Tehtävälista") },
                 actions = {
                     IconButton(onClick = onNavigateToCalendar) {
@@ -47,17 +53,21 @@ fun HomeScreen(
                 }
             )
         },
+
         floatingActionButton = {
             FloatingActionButton(onClick = { showAddDialog = true }) {
                 Icon(Icons.Default.Add, "Lisää tehtävä")
             }
         }
+
     ) { padding ->
         Column(
+
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
         ) {
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -65,9 +75,11 @@ fun HomeScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
+
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
+
                     FilterChip(
                         selected = currentFilter == FilterType.ALL,
                         onClick = {
@@ -76,6 +88,7 @@ fun HomeScreen(
                         },
                         label = { Text("Kaikki") }
                     )
+
                     FilterChip(
                         selected = currentFilter == FilterType.DONE,
                         onClick = {
@@ -84,6 +97,7 @@ fun HomeScreen(
                         },
                         label = { Text("Valmiit") }
                     )
+
                     FilterChip(
                         selected = currentFilter == FilterType.NOT_DONE,
                         onClick = {
@@ -93,16 +107,19 @@ fun HomeScreen(
                         label = { Text("Keskeneräiset") }
                     )
                 }
+
                 TextButton(onClick = onSortByDate) {
                     Text("Järjestä")
                 }
             }
+
 
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = 16.dp)
             ) {
+
                 items(tasks) { task ->
                     TaskItem(
                         task = task,
@@ -116,6 +133,7 @@ fun HomeScreen(
             }
         }
     }
+
 
     if (showAddDialog) {
         TaskDialog(
@@ -139,6 +157,7 @@ fun HomeScreen(
                 onUpdateTask(selectedTask!!.id, title, desc, date)
                 showEditDialog = false
             },
+
             onDelete = {
                 onRemoveTask(selectedTask!!.id)
                 showEditDialog = false
@@ -148,23 +167,27 @@ fun HomeScreen(
 }
 
 @Composable
+
 fun TaskItem(
     task: com.example.h1.domain.model.Task,
     onToggle: () -> Unit,
     onEdit: () -> Unit
 ) {
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp)
             .clickable { onEdit() }
     ) {
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+
             Checkbox(
                 checked = task.isDone,
                 onCheckedChange = { onToggle() }
@@ -174,6 +197,7 @@ fun TaskItem(
                     .weight(1f)
                     .padding(start = 8.dp)
             ) {
+
                 Text(
                     text = task.title,
                     style = MaterialTheme.typography.titleMedium
@@ -204,11 +228,13 @@ fun TaskDialog(
     onSave: (String, String, String) -> Unit,
     onDelete: (() -> Unit)? = null
 ) {
+
     var taskTitle by remember { mutableStateOf(initialTitle) }
     var description by remember { mutableStateOf(initialDescription) }
     var dueDate by remember { mutableStateOf(initialDueDate) }
 
     AlertDialog(
+
         onDismissRequest = onDismiss,
         title = { Text(title) },
         text = {
@@ -235,6 +261,7 @@ fun TaskDialog(
                 )
             }
         },
+
         confirmButton = {
             TextButton(
                 onClick = {
@@ -246,6 +273,7 @@ fun TaskDialog(
                 Text("Tallenna")
             }
         },
+
         dismissButton = {
             Row {
                 if (onDelete != null) {

@@ -15,6 +15,7 @@ fun SettingsScreen(
     onThemeChange: (Boolean) -> Unit,
     onNavigateBack: () -> Unit
 ) {
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -33,7 +34,9 @@ fun SettingsScreen(
                 .padding(padding)
                 .padding(16.dp)
         ) {
+
             Row(
+
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
@@ -45,6 +48,7 @@ fun SettingsScreen(
                     checked = isDarkTheme,
                     onCheckedChange = onThemeChange
                 )
+
             }
         }
     }

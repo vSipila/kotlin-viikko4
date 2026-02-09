@@ -16,6 +16,7 @@ class TaskViewModel : ViewModel() {
     private var isSorted = false
 
     init {
+
         _allTasks.value = listOf(
             Task(nextId++, "Kaupassa käynti", "Maito, leipä, juusto", "2026-02-10", false),
             Task(nextId++, "Kooditehtävä", "Viikon 4 tehtävä", "2026-02-09", false),
@@ -27,6 +28,7 @@ class TaskViewModel : ViewModel() {
     }
 
     fun addTask(title: String, description: String, dueDate: String) {
+
         val newTask = Task(
             id = nextId++,
             title = title,
@@ -34,11 +36,13 @@ class TaskViewModel : ViewModel() {
             dueDate = dueDate,
             isDone = false
         )
+
         _allTasks.value = _allTasks.value + newTask
         applyFilter()
     }
 
     fun toggleTaskDone(taskId: Int) {
+
         _allTasks.value = _allTasks.value.map { task ->
             if (task.id == taskId) task.copy(isDone = !task.isDone)
             else task
@@ -47,6 +51,7 @@ class TaskViewModel : ViewModel() {
     }
 
     fun updateTask(taskId: Int, title: String, description: String, dueDate: String) {
+
         _allTasks.value = _allTasks.value.map { task ->
             if (task.id == taskId) {
                 task.copy(
@@ -59,12 +64,14 @@ class TaskViewModel : ViewModel() {
         applyFilter()
     }
 
+
     fun removeTask(taskId: Int) {
         _allTasks.value = _allTasks.value.filter { it.id != taskId }
         applyFilter()
     }
 
     fun filterByDone(filterType: FilterType) {
+
         currentFilter = filterType
         applyFilter()
     }
@@ -75,6 +82,7 @@ class TaskViewModel : ViewModel() {
     }
 
     private fun applyFilter() {
+
         var filtered = when (currentFilter) {
             FilterType.ALL -> _allTasks.value
             FilterType.DONE -> _allTasks.value.filter { it.isDone }
@@ -87,6 +95,7 @@ class TaskViewModel : ViewModel() {
 
         _tasks.value = filtered
     }
+
 }
 
 enum class FilterType {
