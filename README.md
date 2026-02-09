@@ -1,27 +1,48 @@
- mvvm-arkkitehtuuri
 
-Model: Task-data-luokka (id, title, description, priority, dueDate)
+NavController on  hallintakomponentti. Se pitää kirjaa navigaatiohistoriasta ja mahdollistaa siirtymisen näkymien välillä. 
 
-ViewModel: Käyttää StateFlow/ViewModelState<List<Task>> tilan hallintaan
+NavHost on container-komponentti, joka näyttää kulloinkin aktiivisen näkymän. Se määrittelee kaikki sovelluksen reitit ja yhdistää ne Composable-funktioihin.
 
-View: Jetpack Compose -käyttöliittymä
 
-mvvm malli on hyvä koska se erottaa ui:n ja logiigan sekä helpottaa testattavuutta.
+Sovelluksessa on kolme reittiä:
+- home → HomeScreen (tehtävälista)
+- calendar  CalendarScreen (kalenterinäkymä)
+- settings  SettingsScreen (asetukset)
 
-stateflow pitää tilaa tilaa "stateflow" jos ui:n tulee muutoksia niin se päivittyy automaattisesti.
 
-reaktiiviset toiminnot:
+Model: Task data class (id, title, description, dueDate, isDone)
 
-addTask() - Lisää uusi tehtävä
+ViewModel: TaskViewModel käyttää StateFlow-tilaa tehtävien hallintaan. ViewModel sisältää logiikan tehtävien lisäämiseen, päivittämiseen ja poistamiseen.
 
-toggleDone() - Merkitse tehtävä tehdyksi/kesken
+View: Jetpack Compose -käyttöliittymä (HomeScreen, CalendarScreen, SettingsScreen)
 
-removeTask() - Poista tehtävä
 
-updateTask() - Päivitä tehtävän tiedot
+MVVM-malli on hyvä koska se:
+- Erottaa UI:n ja logiikan toisistaan
+- Helpottaa testattavuutta
+- Mahdollistaa tilan jakamisen näkymien välillä
 
-käyttöliittymä:
+StateFlow pitää tilaa reaktiivisena. Jos tila muuttuu, UI päivittyy automaattisesti.
+Näkymässä jokainen päivämäärä näytetään otsikkona ja sen alla kyseisen päivän tehtävät. Tehtävät järjestetään päivämäärän mukaan nousevaan järjestykseen.
+Käyttäjä näkee selkeästi minkä päivän tehtävä on kyseessä ja voi muokata tehtäviä suoraan kalenterinäkymästä.
 
-HomeScreen - Näyttää tehtävälistan
+AlertDialog hoitaa sekä uuden tehtävän lisäämisen että olemassaolevan muokkaamisen. Dialog ei ole navigaatiokohta vaan UI-komponentti joka näytetään näkymän päällä.
+## Reaktiiviset toiminnot
 
-DetailScreen - Dialogi tehtävän muokkaamiseen ja poistamiseen
+- addTask() - Lisää uusi tehtävä
+- toggleTaskDone() - Merkitse tehtävä tehdyksi/kesken
+- removeTask() - Poista tehtävä
+- updateTask() - Päivitä tehtävän tiedot
+- filterByDone() - Filtteröi tehtäviä
+- sortByDueDate() - Järjestä päivämäärän mukaan
+
+
+HomeScreen - Näyttää tehtävälistan filttereineen ja lajittelumahdollisuudella
+
+CalendarScreen - Näyttää tehtävät kalenterimaisesti päivämäärän mukaan ryhmiteltynä
+
+SettingsScreen - Teeman vaihto (tumma/vaalea)
+
+DetailScreen - AlertDialog-dialogi tehtävän muokkaamiseen ja poistamiseen
+
+
